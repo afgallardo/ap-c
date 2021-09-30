@@ -1,0 +1,39 @@
+pipeline{
+   parameters{
+	choice(name: 'Nodo', choices: ['master','slave-1','slave-2'], description: 'Seleccione el node a utilizar')
+}
+   agent{label "${Nodo.params}"}
+   stages{
+	stage('Clonando Proyecto desde el Repo'){
+	   steps{
+		sh 'echo "Clonando Proyecto desde el Repo"'
+		git url: 'https://github.com/afgallardo/prueba-c.git'
+	}}	
+	stage('Compilando Codigo'){
+	   steps{
+		sh 'echo "Compilando Codigo"'
+		sh 'gcc fuente.c -o apc2'
+	}}
+	stage('Probando Aplicacion'){
+	   steps{
+		sh 'echo "Probando Aplicacion"'
+		sh './apc2'
+	}}
+	stage('Generando Imagen de Contenedor'){
+	   steps{
+		sh 'echo "Generando Imagen de Contenedor"'
+		sh 'docker build -t imagen-prueba:2 .'
+	}}
+ }
+   post{
+	always{
+		sh 'echo "Esto se ejecuta SIEMPRE"'
+	}}
+	success{
+		sh 'echo "Esto se ejecuta ante un EXITO"'
+	}
+	failure{
+		sh 'echo "Esto se ejecuta ante una FALLA"'
+	}
+ }
+}

@@ -1,3 +1,3 @@
 FROM nginx
 
-ADD apc1 /tmp
+ADD apc2 /tmp

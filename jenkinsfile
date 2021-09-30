@@ -2,7 +2,7 @@ pipeline{
    parameters{
 	choice(name: 'Nodo', choices: ['master','slave-1','slave-2'], description: 'Seleccione el node a utilizar')
 }
-   agent{label "${Nodo.params}"}
+   agent{label "${params.Nodo}"}
    stages{
 	stage('Clonando Proyecto desde el Repo'){
 	   steps{
@@ -24,11 +24,16 @@ pipeline{
 		sh 'echo "Generando Imagen de Contenedor"'
 		sh 'docker build -t imagen-prueba:2 .'
 	}}
+	stage('Creando Contenedor'){
+	   steps{
+		sh 'echo "Creando Contenedor"'
+		sh 'docker run -d imagen-prueba:2'
+	}}
  }
    post{
 	always{
 		sh 'echo "Esto se ejecuta SIEMPRE"'
-	}}
+	}
 	success{
 		sh 'echo "Esto se ejecuta ante un EXITO"'
 	}
